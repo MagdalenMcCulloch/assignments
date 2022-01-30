@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h> 
 
 struct snack{
   char snackName[20]; 
