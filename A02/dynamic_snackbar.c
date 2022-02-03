@@ -9,19 +9,27 @@ struct snack {
 };
  
 int main() {
-int snacksNum = 0;
-printf("enter a number of snacks: ");
-scanf("%d",&snacksNum);
- 
-for(int i = 0; i <snacksNum; i++){
- printf("enter the snack name: ");
- 
- printf("enter the cost: ");
- 
- printf("enter the cost: ");
- 
-} // for loop
- 
+  int snacksNum;
+  printf("enter a number of snacks: ");
+  scanf("%d",&snacksNum);
+  struct snack snacksStruct[snacksNum]; 
+  
+  for(int i = 0; i <snacksNum; i++){
+    printf("enter the snack name: ");
+    scanf("%s", snacksStruct[i].name); 
+    
+    printf("enter the cost: ");
+    scanf("%f", &snacksStruct[i].cost); 
+
+    printf("enter the quantity: ");
+    scanf("%d", &snacksStruct[i].quantity);
+  
+  } // for loop
+  // prints the snackbar
+  for(int i = 0; i <snacksNum; i++){
+    printf("%d) %s\tcost: $%0.2f\tquantity: %d\n",
+            i,snacksStruct[i].name,snacksStruct[i].cost,
+            snacksStruct[i].quantity);
+  }
   return 0;
 }
-
