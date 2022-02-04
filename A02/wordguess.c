@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include<time.h>
  
 int main() {
   // using one word instead of a file for now
@@ -12,47 +13,68 @@ int main() {
 
   char *guessSpace;
   guessSpace = malloc(sizeof(char)*32); 
-
+  //represents the number of words in the file 
+  int wordsNum = 0; 
+  int randomNum = 0; 
   //reads in from the file 
   FILE *infile = NULL;
-  infile = fopen("wordlist.txt","r");
+  infile = fopen("wordlist.txt.txt","r");
+   
 
   //reads the first line 
   //how do i know what int to put here?? 
-  char *fgets(char *word, int 10, FILE *infile); 
+  word = fgets(word, 32, infile); 
 
+  wordsNum = atoi(word); 
+
+  /*
+  for(int i = 0; i < wordsNum; i++){
+    printf("%s",fgets(word, 32, infile));
+  }   */ 
+
+  srand(time(0));
+  randomNum = rand(); 
+  randomNum = (randomNum%(wordsNum-1))+1;
+  for(int i =0; i < randomNum; i++) {
+  fgets(word,32,infile); 
+  }
+  int wordLength = strlen(word); 
 
   //makes every char necessary in guessSpace "_"
-  for(int i=0; i < strlen(word); i++){
+  for(int i=0; i < wordLength-2; i++){
     guessSpace[i] = '_'; 
   }
 
   printf("welcome to Word Guess!!\n");
   //goes at most the length of the alphabet 
   //think i need a while loop 
-  for(int i = 0; i<26; i++){ 
+  while((strchr(guessSpace,'_'))!= NULL){
+    // change it so that it looks for the word in guessSpace!!!
     char currentGuess;
     //prints the number of the current turn 
-    printf("Turn: %d",turnNum);
+    printf("Turn: %d\n",turnNum);
     turnNum++;
     printf("%s",guessSpace);
-    printf("guess a character: ");
-    scanf("%c",&currentGuess);
+    printf("\nguess a character: ");
+    scanf(" %c",&currentGuess);
     //fills in the guessed letter in the correct place in guessSpace
-    for(int i = 0; i < strlen(word); i++){
+    for(int i = 0; i < wordLength; i++){
       if(word[i] == currentGuess){
         guessSpace [i] = currentGuess;
       }
     }// for loop
     //prints a statement if the letter they guessed is not in the word 
-    if(char *strchr(char *word, char currentGuess) == NULL){
-      printf("%c is not in the word",currentGuess); 
-    } //if 
+    
+    if(strchr(word, currentGuess) == NULL){
+      printf("%c is not in the word\n",currentGuess); 
+    } //if   
 
   }  // greater for loop 
 
   printf("You won in %d turns!\n", turnNum);
-  return 0;
+  
+   
   free(word); 
   free(guessSpace); 
+  return 0;
 }
