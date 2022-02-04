@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
- 
+ //stores information about snack
 struct snack {
   char name[32];
   float cost;
@@ -12,6 +12,7 @@ int main() {
   int snacksNum;
   printf("enter a number of snacks: ");
   scanf("%d",&snacksNum);
+  //creates variables for the struct as many snacks as the user wants
   struct snack snacksStruct[snacksNum]; 
   
   for(int i = 0; i <snacksNum; i++){

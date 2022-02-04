@@ -11,6 +11,7 @@ int main() {
   // the entered string can be at most 32 chars long
   word = malloc(sizeof(char)*32);
 
+  //creates the array of "_"
   char *guessSpace;
   guessSpace = malloc(sizeof(char)*32); 
   //represents the number of words in the file 
@@ -18,25 +19,19 @@ int main() {
   int randomNum = 0; 
   //reads in from the file 
   FILE *infile = NULL;
-  infile = fopen("wordlist.txt.txt","r");
-   
-
+  infile = fopen("words.txt","r");
+  
   //reads the first line 
-  //how do i know what int to put here?? 
   word = fgets(word, 32, infile); 
 
   wordsNum = atoi(word); 
 
-  /*
-  for(int i = 0; i < wordsNum; i++){
-    printf("%s",fgets(word, 32, infile));
-  }   */ 
-
+  //finds a random word in the list 
   srand(time(0));
   randomNum = rand(); 
   randomNum = (randomNum%(wordsNum-1))+1;
   for(int i =0; i < randomNum; i++) {
-  fgets(word,32,infile); 
+    fgets(word,32,infile); 
   }
   int wordLength = strlen(word); 
 
@@ -46,10 +41,10 @@ int main() {
   }
 
   printf("welcome to Word Guess!!\n");
-  //goes at most the length of the alphabet 
-  //think i need a while loop 
+  
+  //goes until the user fills in all the letters
   while((strchr(guessSpace,'_'))!= NULL){
-    // change it so that it looks for the word in guessSpace!!!
+    
     char currentGuess;
     //prints the number of the current turn 
     printf("Turn: %d\n",turnNum);
@@ -73,7 +68,7 @@ int main() {
 
   printf("You won in %d turns!\n", turnNum);
   
-   
+  //frees the dynamically allocated space 
   free(word); 
   free(guessSpace); 
   return 0;
