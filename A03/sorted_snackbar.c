@@ -15,8 +15,7 @@ struct snack { // this is the node i think
   struct snack* next;
 };
 
-// Insert a new node to a list (implemented as a linked list).  
-  // yes this is why its called insert sorted 
+// Insert a new node to a list (implemented as a linked list).   
 // The new node should store the given properties
 // Param snacks: the first item in the list (NULL if empty)
 // Param name: the snack name (max length is 32 characters)
@@ -25,47 +24,67 @@ struct snack { // this is the node i think
 // Returns the first item in the list
 struct snack* insert_sorted(struct snack* snacks, 
   const char* name, int quantity, float cost) {
-
     //represents the current node 
     // not sure if the way I used pointers will work
-    struct snack currentSnack = *(struct snack*)malloc(sizeof(struct snack)); 
+    struct snack* currentSnack = malloc(sizeof(struct snack)); 
     //struct snack head;
-
-    int snacksNum;
-    printf("enter a number of snacks: ");
-    scanf("%d",&snacksNum);
-
-    for(int i =0; i<snacksNum; i++){
-      printf("enter the snack name: ");
-      scanf("%s", currentSnack.name); 
-      
-      printf("enter the cost: ");
-      scanf("%f", &currentSnack.cost); 
-
-      printf("enter the quantity: ");
-      scanf("%d", &currentSnack.quantity);
+    if(currentSnack == NULL){
+      printf("ERROR: Out of space!\n"); 
+      exit(1); 
     }
-    //represents the current node 
-    struct snack* currentSnack = (struct snack*)malloc(sizeof(struct snack)); 
-    //struct snack head;
+
+    if(currentSnack -> name >= snacks -> name){
     
+      currentSnack -> name = snacks -> name; 
+      currentSnack -> quantity = snacks -> quantity; 
+      currentSnack -> cost = snacks -> cost; 
+      currentSnack -> next = snacks -> next; 
 
-   if(head == NULL){
-     printf("Error malloc\n"); 
-     exit(1); 
-   } 
+    }
 
-
+    else if (currentSnack -> name < snacks -> name){
+      // i feel like in this case we need the previous pointing at the current snack
+    currentSnack->name = name; 
+    currentSnack->quantity = quantity; 
+    currentSnack-> cost = cost; 
+    currentSnack-> next = snacks; 
+    } 
   // todo
-  return NULL;
+  return currentSnack;
 }
-
 // Delete (e.g. free) all nodes in the given list of snacks
 // Param snacks: the first node in the list (NULL if empty)
 void clear(struct snack* snacks) {
+  //how do we know what to free if we don't know how many nodes?? 
+  free(snacks); 
 }
 
+
 int main() {
+  //should the head be dynamically allocated 
+  struct snack* head = NULL; 
+  int snacksNum;
+  char snackName[32]; 
+  float snackCost;
+  int snackQuantity; 
+
+
+    printf("enter a number of snacks: ");
+    scanf("%d",&snacksNum);
+    //does this look good?/why is there an error?
+    for(int i =0; i<snacksNum; i++){
+      printf("enter the snack name: ");
+      scanf("%s", snackName); 
+      
+      printf("enter the cost: ");
+      scanf("%f", &snackCost); 
+
+      printf("enter the quantity: ");
+      scanf( "%d", &snackQuantity);
+    }
+    insert_sorted(head, snackName, snackQuantity, snackCost); 
+
   return 0;
+
 }
 

@@ -11,33 +11,45 @@ int main() { // I think this needs to take the arg of the text file?
     // variables 
     int columnsNum = 0;
     int rowsNum = 0; 
-
-    int* val; 
+    int magicConstant = 0; 
 
     //read in the file 
-    scanf(" %d",&val); 
-    //assign values to the rows and columns 
-    columnsNum = val[0]; 
-    rowsNum = val[1]; 
-    //initialize the matrix
-    int** matrixSquare; 
+    //she says to use scanf, but we still need to do this right? 
+    FILE *infile = NULL;
+    infile = fopen("magic1.c","r"); 
+
+    fscanf(" %d, %d",&columnsNum,rowsNum);  
     
-    matrixSquare = malloc(columnsNum* sizeof(int)); 
-    for(int i =0; i < rowsNum; i++){
-        matrixSquare[i] = malloc(rowsNum * sizeof(int)); 
+    
+    int* valArr;
+    valArr = malloc(sizeof(int)*(columnsNum*rowsNum)); 
+
+    for(int i = 0; i<(columnsNum*rowsNum); i++){
+        fscanf("%d",valArr); 
     }
-
-    //define in the matrix 
-    // it will go column by column 
-    for (int i = 0; i < columnsNum; i++){
-        matrixSquare = i; 
-        //it will stop at every spot in each row 
-        for(int i = 0; i <rowsNum; i++){
-
-             
+    
+    int count = 0; 
+    int rowsMagicConstant [rowsNum]; 
+    while(valArr[count] != NULL){
+        for(int i=0; i <rowsNum; i++){
+            rowsMagicConstant[i] += valArr[count]; 
+            count++; 
         }
-
     }
+
+
+
+
+
+    //compares the magic constant for each row
+    //this can go near the bottom 
+    int rFirstMagicConstant = rowsMagicConstant[0]; 
+    for(int a = 0; a <rowsNum; a++){
+        if(rFirstMagicConstant != rowsMagicConstant[a]){
+            printf("This is not a magic square"); 
+        }
+    }
+
 
 
 
