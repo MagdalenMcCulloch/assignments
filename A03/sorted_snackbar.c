@@ -26,11 +26,11 @@ struct snack* insert_sorted(struct snack* snacks,
   const char* name, int quantity, float cost) {
     //represents the current node
     struct snack* currentSnack = malloc(sizeof(struct snack));
-   /*
+   
     if(currentSnack == NULL){
       printf("ERROR: Out of space!\n");
       exit(1);
-    } */
+    }
     strcpy(currentSnack -> name, name);
     currentSnack->quantity = quantity;
     currentSnack->cost = cost;
@@ -38,43 +38,49 @@ struct snack* insert_sorted(struct snack* snacks,
     // need to end when it reached the right place in the list,
     // not when null
     // is this good???
-    while(currentSnack->next != NULL){
-     
-      //if its the first snack in the list
-      if(snacks == NULL){
-        snacks = currentSnack;
-        /*
-        strcpy(currentSnack -> name, snacks->name);  
-      currentSnack -> quantity = snacks->quantity;
-      currentSnack -> cost = snacks->cost; */
-      }
-      // if the current snack is lexographically later than the one on the top
-      if((strcmp(currentSnack -> name, snacks-> name))>0){
-        currentSnack = currentSnack -> next;
-      }
-      // if the current snack name is lexographically earlier than the one on the top
-      if((strcmp(currentSnack -> name, snacks-> name))<0){
-     
-      strcpy(currentSnack -> name, snacks->name);  
-      currentSnack -> quantity = snacks->quantity;
-      currentSnack -> cost = snacks->cost;
- 
-      }
-     
+    
+    //if its the first snack in the list
+    if(snacks == NULL){
+      snacks = currentSnack;
     }
+    //if the current snack is lexographically earleir than the first snack
+    else if((strcmp(snacks-> name, currentSnack -> name))>0){
+      // the pointer of current snack will point at the current head 
+      currentSnack-> next = snacks; 
+      // making currentSnack the head
+      snacks = currentSnack; 
+    } 
+    // if the current snack is lexographically later than the one on the top
+    else if((strcmp(currentSnack -> name, snacks-> name))>0){
+      currentSnack = currentSnack -> next;
+    }
+    else{
+      while(currentSnack->next != NULL){
+       // if the current snack name is lexographically earlier than the one on the top
+       if((strcmp(currentSnack -> name, snacks-> name))<0){
+     
+        strcpy(currentSnack -> name, snacks->name);  
+        currentSnack -> quantity = snacks->quantity;
+        currentSnack -> cost = snacks->cost;
+ 
+        }
+     
+      } 
+    } 
   // todo
-  return currentSnack;
+  return snacks;
 }
 // Delete (e.g. free) all nodes in the given list of snacks
 // Param snacks: the first node in the list (NULL if empty)
 void clear(struct snack* snacks) {
   //how do we know what to free if we don't know how many nodes??
   // frees each node of snacks except the last
+  /*
   for(snacks->next != NULL){
     free(snacks);
   }
   //frees the tail
-  free(snacks);
+  free(snacks); */ 
 }
  
  
@@ -85,6 +91,7 @@ int main() {
   char snackName[32];
   float snackCost;
   int snackQuantity;
+
  
  
     printf("enter a number of snacks: ");
@@ -100,14 +107,15 @@ int main() {
       printf("enter the quantity: ");
       scanf( "%d", &snackQuantity);
  
-     insert_sorted(head, snackName, snackQuantity, snackCost);  
+     head = insert_sorted(head, snackName, snackQuantity, snackCost);  
     }
    
     for(int a = 0; a<snacksNum; a++){
-      printf("%d) %s\tcost: $%0.2f\tquantity: %d\n",a, head->name, head->cost, head->quantity);
+    //for(current = head; current != NULL; current = current-> next)
+     // printf("%d) %s\tcost: $%0.2f\tquantity: %d\n",a, current->name, head->cost, head->quantity);
     }  
-    // should it be clear(head);
-  clear(snacks);
+  
+  //clear(*snack); 
   return 0;
  
 }

@@ -20,6 +20,7 @@ int main() { // I think this needs to take the arg of the text file?
     scanf(" %d, %d",&columnsNum,&rowsNum);  
    
    
+   
     int* valArr;
     valArr = malloc(sizeof(int)*(columnsNum*rowsNum));
  

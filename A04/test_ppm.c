@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "read_ppm.h"
-#include "read_ppm.c"
 
 int main() {
 
@@ -20,7 +19,7 @@ int main() {
   for(int i = 0; i < 2*sizeof(testArr); i++){
     printf("(%d,%d,%d) ",testArr[i].red, testArr[i].green, testArr[i].blue); 
      
-    if(counter == w){
+    if(counter%w == 0){
       printf("\n" ); 
       counter = 0; 
     }
