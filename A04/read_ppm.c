@@ -5,11 +5,15 @@
 // TODO: Implement this function
 // Feel free to change the function signature if you prefer to implement an 
 // array of arrays
+// the pointers to width and height here are set up outside the function because 
+// functions can only return one thing 
 struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
  
   //int magicConstant; 
   char *currentLine; 
   currentLine = malloc(sizeof(char)*34); 
+  char *dimensions; 
+  dimensions = malloc(sizeof(char)*34); 
   unsigned char r;
   unsigned char g;
   unsigned char b;
@@ -23,19 +27,18 @@ struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
   }
   
   //reads the first line, should be "P3"
-  currentLine =  fgets(currentLine, 32, fp); 
+  fgets(currentLine, 32, fp); 
 
-  //gets the width 
-  currentLine =  fgets(currentLine, 32, fp);
-  //int wi;  
-  *w = (int)currentLine[0];
-  //w = &wi; 
- 
-  //int hi; 
+  //gets the dimensions 
+  fgets(currentLine, 32, fp);
+    
+  strcpy(dimensions,currentLine); 
+  char space = ' '; 
+  dimensions = strtok(currentLine,&space); 
+  //gets the height
+  *w = atoi(dimensions); 
   //gets the height  
-  *h = (int)currentLine[2]; 
- // h = &hi; 
-  //2 bc there is a space between the numbers 
+  *h = atoi(currentLine); 
 
   //checks to see if the width and height are empty
   if((h==NULL)&&(w==NULL)){
@@ -44,7 +47,7 @@ struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
   }
 
   //gets the magic constant 
-  currentLine =  fgets(currentLine, 32, fp); 
+  currentLine = fgets(currentLine, 32, fp); 
   //magicConstant = atoi(currentLine); 
   
   //now we can allocate memory for the array of RGB triplets 

@@ -9,12 +9,10 @@
 struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
   
   //int magicConstant; 
-  char *currentLine; 
-  currentLine = malloc(sizeof(char)*34); 
-  int elementsNum = 0; 
+  char currentLine [1024];   
  // unsigned char r;
  // unsigned char g;
-//  unsigned char b;
+ //unsigned char b;
 
   //read in the file
   FILE* fp = fopen(filename, "rb");
@@ -23,24 +21,16 @@ struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
     return(NULL); 
   }
   //reads the first line, should be "P6"
-  currentLine =  fgets(currentLine, 32, fp); 
-  //reads the second line 
-  currentLine =  fgets(currentLine, 32, fp);
-   //gets the width 
-  *w = (int)currentLine[0];
-  //gets the height  
-  *h = (int)currentLine[2]; 
-  //done this way 2 bc there is a space between the numbers 
+  fgets(currentLine, 1024, fp); 
 
-  //checks to see if the width and height are empty
-  if((h==NULL)&&(w==NULL)){
-    printf("the file is not valid. Memmory cannot be allocated for the image"); 
-    return(NULL); 
+  fgets(currentLine, 1024, fp);
+  if(currentLine[0] == '#'){
+    fgets(currentLine, 1024, fp); 
   }
-  //gets the number of elements in the file  
-  currentLine =  fgets(currentLine, 32, fp); 
-  elementsNum = atoi(currentLine); 
+  //gets the dimensions 
+  sscanf(currentLine,"%d %d",w,h);
 
+  fgets(currentLine, 1024, fp); 
   
   //now we can allocate memory for the array of RGB triplets 
   struct ppm_pixel *pixArr = NULL; 
@@ -50,21 +40,10 @@ struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
     //fscanf returns 3 
    // fscanf(fp, " %hhu %hhu %hhu", &r, &g, &b); 
    //copies in the pixel data to the array as one big block 
-   fread(pixArr,sizeof(struct ppm_pixel),elementsNum,fp); 
-
-   // I don't think I can really use the colors
-   // maybe make a for loop to assign colors in 3s to the values 
-    //pixArr[i].red = strtol(r,0,2); 
-   // pixArr[i].green = strtol(g,0,2); 
-   // pixArr[i].blue = strtol(b,0,2); 
-   //pixArr[i].red = r; 
-   // pixArr[i].green = g;
-   // pixArr[i].blue = b; 
-    
- // }  
+   fread(pixArr,sizeof(struct ppm_pixel),((*w)*(*h)),fp); 
+ 
    
   fclose(fp); 
-  free(currentLine); 
   //free(pixArr); 
   return pixArr;
   return NULL;
@@ -80,14 +59,9 @@ extern void write_ppm(const char* filename, struct ppm_pixel* pxs, int w, int h)
   if (fp == NULL) {
     printf("The name of the file is not valid");  
   }
+  fprintf(fp,"P6\n %d %d\n 255",w,h); 
   fwrite(pxs,sizeof(struct ppm_pixel),(w*h),fp); 
-  // really pxs should be pixArr
 
-  //how do we change the name?
-  //char *newName; 
-  //newName = malloc(sizeof(char)*34);  
-  //newName = filename + "-glitch.ppm";
-  //rename(filename, newName); 
 
   fclose(fp); 
   
