@@ -2,86 +2,115 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
+
+void game(int rounds); 
+
+int main() {
+  int r = 0; 
+  printf("how many rounds would you like to play?\n");
+  scanf("%i", &r);
+  game(r);
+  return r;  
+}
+
 //function
-// char array return type????
 void game(int rounds){
  
-  int AIscore;
-  int UserScore;
- 
- 
-  int UserisRock  = strcmp(userchoice, "rock");
-  int UserisPaper = strcmp(userchoice, "paper");
-  int UserisScissors = strcmp(userchoice, "scissors");
+  int AIscore = 0;
+  int UserScore = 0;
+  char AIchoice[10]; 
+  char userchoice[10]; 
  
   for(int i =0; i < rounds; i++) {
     printf("Which do you choose? rock, paper, or scissors?\n");
-    scanf("%s",&userchoice);
+    scanf("%s",userchoice);
  
   //choses rock paper or scissors for the computer
-    int AIchoice = rand() % 3;
-    if(AIchoice = 0){
-      printf("AI chose rock\n");
+    int AInum = rand() % 3;
+    if(AInum == 0){
+      strcpy(AIchoice,"rock"); 
    }
- 
-    if(AIchoice = 1){
-      printf("AI chose paper\n");
+    else if(AInum == 1){
+      strcpy(AIchoice,"paper");
    }
-   if(AIchoice = 2){
-     printf("AI chose scissors\n");
+   else if(AInum == 2){
+     strcpy(AIchoice,"scissors");
    }
- 
-  if(UserisRock > 0 || UserisPaper > 0 || UserisScissors > 0){
-    printf("you entered an invalid choice %s/n",userchoice);
+  //game result cases
+  // rock v rock 
+  // if(userchoice == "rock" && AInum == 0){
+    if(strstr(userchoice,"rock")&& AInum == 0){
+     printf("AI chose rock\n"); 
+     printf("its a tie!\n");
+     printf("AI score: %i, Player Score: %i\n",AIscore,UserScore); 
+   }
+  //rock v paper
+   else if(strstr(userchoice,"rock") && AInum == 1){
+    printf("AI chose paper\n"); 
+    printf("paper covers rock\n");
+    AIscore++; 
+    printf("AI score: %i, Player Score: %i\n",AIscore,UserScore); 
+   }
+   //rock v scissors 
+   else if(strstr(userchoice,"rock") && AInum == 2){
+     printf("AI chose scissors\n"); 
+     printf("rock bashes scissors\n"); 
+     UserScore++; 
+     printf("AI score: %i, Player Score: %i\n",AIscore,UserScore); 
+   }
+   //paper v rock
+  else if(strstr(userchoice,"paper") && AInum == 0){
+    printf("AI chose rock\n"); 
+    printf("paper covers rock\n");
+    UserScore++; 
+    printf("AI score: %i, Player Score: %i\n",AIscore,UserScore); 
+   }
+   //paper v paper
+   else if(strstr(userchoice,"paper") && AInum == 1){
+     printf("AI chose paper\n");
+     printf("its a tie!\n");
+     printf("AI score: %i, Player Score: %i\n",AIscore,UserScore); 
+   }
+   //paper v scissors
+   else if(strstr(userchoice,"paper") && AInum == 2){
+     printf("AI chose scissors\n"); 
+     printf("scissors cut paper\n");
+     AIscore++; 
+     printf("AI score: %i, Player Score: %i\n",AIscore,UserScore); 
+   }
+  //scissors v rock 
+   else if(strstr(userchoice,"scissors") && AInum == 0){
+    printf("AI chose rock\n");
+    printf("rock bashes scissors\n");
+    AIscore++; 
+    printf("AI score: %i, Player Score: %i\n",AIscore,UserScore); 
+   }
+   //scissors v paper
+   else if(strstr(userchoice,"scissors") && AInum == 1){
+     printf("AI chose paper\n");
+     printf("scissors cut paper\n"); 
+     UserScore++; 
+     printf("AI score: %i, Player Score: %i\n",AIscore,UserScore); 
+   }
+   //scissors v scissors
+   else if(strstr(userchoice,"scissors") && AInum == 2){
+     printf("AI chose scissors\n"); 
+     printf("its a tie!");
+     printf("AI score: %i, Player Score: %i\n",AIscore,UserScore); 
+   }
+   else{
+    printf("AI chose %s\n",AIchoice); 
+    printf("You entered an invalid choice: %s\n",userchoice); 
+    printf("AI score: %i, Player Score: %i\n",AIscore,UserScore); 
+   }
   }
-  // user winning cases
-  else  if((UserisRock == 0) && (AIchoice == 2)){ //ai chose scissors
-    UserScore++;
+  if(UserScore < AIscore){
+    printf("The computer won!!\n"); 
   }
-  else  if((UserisPaper == 0) && (AIchoice == 0)){ //ai chose rock
-    UserScore++;
+  else if(UserScore > AIscore){
+    printf("You win!!\n");     
   }
-  else  if((UserisScissors == 0) && (AIchoice == 1)){ //ai chose paper
-    UserScore++;
+  else{
+    printf("You tied with the computer!\n"); 
   }
-  //user loosing cases  
-  else  if((UserisRock == 0) && (AIchoice == 1)){ //ai chose paper
-    AIscore++;
-  }
-  else  if((UserisPaper == 0) && (AIchoice == 2)){ //ai chose scissors
-    AIscore++;
-  }
-  else  if((UserisScissors == 0) && (AIchoice == 0)){ //ai chose rock
-    AIscore++;
-  }
-}
-   
-  printf("AI score: %d, Player score: %d",scores[0],scores[1]);
-}
-int main() {
-  //declare variables
-  int rounds; //number of rounds user choses to play
-  char userchoice[9]; //user's choice between rock, paper, and scissors
- 
-  printf("Welcome to Rock, Paper, Scissors!\n");
-  printf("How many rounds do you want to play?\n");  
-  scanf("%d",&rounds);
- 
-  // the user and computer will play the game rounds times
-  for(int i =0; i < rounds; i++) {
-    printf("Which do you choose? rock, paper, or scissors?\n");
-    scanf("%s",&userchoice);
- 
-   //remember to call the function
-  // int results[] = game(char userchoice[]);
-  // printf("AI score: %d, Player score:%d",results[0],results[1]);
-   
-   
- 
-  }
-  printf("AI score: %d, Player score: %d",scores[0],scores[1]);
- 
- 
- // srand(time(0));
-  return 0;
 }
