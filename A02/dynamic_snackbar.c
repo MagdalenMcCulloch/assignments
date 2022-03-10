@@ -13,7 +13,10 @@ int main() {
   printf("enter a number of snacks: ");
   scanf("%d",&snacksNum);
   //creates variables for the struct as many snacks as the user wants
-  struct snack snacksStruct[snacksNum]; 
+  struct snack *snacksStruct; 
+  snacksStruct = malloc(snacksNum);
+
+  //struct snack snacksStruct[snacksNum]; 
   
   for(int i = 0; i <snacksNum; i++){
     printf("enter the snack name: ");
@@ -32,5 +35,6 @@ int main() {
             i,snacksStruct[i].name,snacksStruct[i].cost,
             snacksStruct[i].quantity);
   }
+  free(snacksStruct); 
   return 0;
 }

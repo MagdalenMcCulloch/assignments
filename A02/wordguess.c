@@ -65,11 +65,12 @@ int main() {
     } //if   
 
   }  // greater for loop 
-
+  printf("the word was: %s",word); 
   printf("You won in %d turns!\n", turnNum);
   
   //frees the dynamically allocated space 
   free(word); 
   free(guessSpace); 
+  free(infile); 
   return 0;
 }
