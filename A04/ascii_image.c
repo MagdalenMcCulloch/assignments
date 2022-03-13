@@ -1,21 +1,18 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "read_ppm.h"
 
 int main(int argc, char** argv) {
   // todo
   int width; 
   int height; 
-  struct ppm_pixel *asciiArr; 
-  asciiArr = read_ppm(*argv, &width, &height);
-
-   
+  struct ppm_pixel *asciiArr;
+  asciiArr = read_ppm("smile-ascii.ppm", &width, &height); 
   int currentSymbol = 0; 
-
-  //int widthCounter = 0; 
-
+   
+  
   printf("Reading %s with width %i and height %i\n",*argv,width,height); 
-  for(int i=0; i<2*sizeof(asciiArr); i++){
-
+  for(int i=0; i<(width*height); i++){
     currentSymbol += asciiArr[i].red; 
     currentSymbol += asciiArr[i].green; 
     currentSymbol += asciiArr[i].blue; 
@@ -52,14 +49,13 @@ int main(int argc, char** argv) {
       printf(" "); 
     }
     currentSymbol = 0;  
-    /*
-    if((widthCounter% width)==0){
-      printf("\n"); 
-      widthCounter =0; 
-    }
-    widthCounter++; */ 
-  } //for loop 
-
+    
+    if(i != 0 &&((i+1)% width==0)){
+      printf("\n");  
+    }   
+  } 
+  
+  free(asciiArr); 
   return 0;
 }
 

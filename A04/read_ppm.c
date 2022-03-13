@@ -9,11 +9,7 @@
 // functions can only return one thing 
 struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
  
-  //int magicConstant; 
-  char *currentLine; 
-  currentLine = malloc(sizeof(char)*34); 
-  char *dimensions; 
-  dimensions = malloc(sizeof(char)*34); 
+  char currentLine [1024];
   unsigned char r;
   unsigned char g;
   unsigned char b;
@@ -27,18 +23,14 @@ struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
   }
   
   //reads the first line, should be "P3"
-  fgets(currentLine, 32, fp); 
+  fgets(currentLine, 1024, fp); 
 
+  fgets(currentLine, 1024, fp);
+  if(currentLine[0] == '#'){
+    fgets(currentLine, 1024, fp); 
+  }
   //gets the dimensions 
-  fgets(currentLine, 32, fp);
-    
-  strcpy(dimensions,currentLine); 
-  char space = ' '; 
-  dimensions = strtok(currentLine,&space); 
-  //gets the height
-  *w = atoi(dimensions); 
-  //gets the height  
-  *h = atoi(currentLine); 
+  sscanf(currentLine,"%d %d",w,h); 
 
   //checks to see if the width and height are empty
   if((h==NULL)&&(w==NULL)){
@@ -47,8 +39,7 @@ struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
   }
 
   //gets the magic constant 
-  currentLine = fgets(currentLine, 32, fp); 
-  //magicConstant = atoi(currentLine); 
+  fgets(currentLine, 32, fp);  
   
   //now we can allocate memory for the array of RGB triplets 
   struct ppm_pixel *pixArr = NULL; 
@@ -63,8 +54,6 @@ struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
     
   }  
    
-  fclose(fp); 
-  free(currentLine); 
-  //free(pixArr); 
+  fclose(fp);  
   return pixArr;
 }

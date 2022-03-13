@@ -19,8 +19,8 @@ int main() {
   for(int i = 0; i < 2*sizeof(testArr); i++){
     printf("(%d,%d,%d) ",testArr[i].red, testArr[i].green, testArr[i].blue); 
      
-    if(counter%w == 0){
-      printf("\n" ); 
+    if(i != 0 && ((i+1) %w == 0)){
+      printf("\n"); 
       counter = 0; 
     }
     counter++;  
