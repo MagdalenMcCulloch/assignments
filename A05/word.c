@@ -9,13 +9,10 @@ int main() {
   //gets the word as a char array
   printf("Enter a word: ");
   scanf("%s", word);
- // printf("%u",word); 
+
   //change each character to hexidecimal 
   for(int i = 3; i > -1; i--){
-
     printf("Debug: %c = 0x%0x \n",word[i], word[i]); 
-    //temp = word[i]<<(i*2); 
-    //num = num+word[i]<<(i*2); 
 
   }
    

@@ -5,13 +5,13 @@
 int main(int argc, char** argv) {
   int w = 0; 
   int h = 0; 
-
-  
   struct ppm_pixel *testArr; 
-  testArr = read_ppm("feep-raw.ppm", &w, &h); 
-  write_ppm("test.ppm",testArr,w,h); 
-  free(testArr); 
-  testArr = read_ppm("test.ppm",&w,&h); 
+  testArr = read_ppm("feep-raw.ppm", &w, &h);
+
+  // for testing 
+  //write_ppm("test.ppm",testArr,w,h); 
+  //free(testArr); 
+  //testArr = read_ppm("test.ppm",&w,&h); 
 
   printf("testing file feep-raw.ppm: %i %i \n",w,h); 
   

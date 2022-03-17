@@ -51,13 +51,14 @@ struct node* pop(struct node* top) {
  
 // Delete (e.g. free) all nodes in the given stack
 // Param top: the top node of the stack (NULL if empty)
+/*
 void clear(struct node* top) {
   // does this need some sort of loop to free all of them?
   while(top->next != NULL){
     free(top);
   }
-  free(top);
-}
+  //free(top);
+} */ 
 // Print all nodes in the given stack (from top to bottom)
 // Param top: the top node of the stack (NULL if empty)
 void print(struct node* top) {
@@ -104,7 +105,7 @@ int main(int argc, char* argv[]) {
  
   //should these be the variables here??
   print(stackTop);
-  clear(stackTop);
+  //clear(stackTop);
   fclose(infile);
  
  

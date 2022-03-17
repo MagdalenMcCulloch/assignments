@@ -43,7 +43,7 @@ struct snack* insert_sorted(struct snack* snacks,
     if(snacks == NULL){
       snacks = currentSnack;
     }
-    //if the current snack is lexographically earleir than the first snack
+    //if the current snack is lexographically earlier than the first snack
     else if((strcmp(snacks-> name, currentSnack -> name))>0){
       // the pointer of current snack will point at the current head 
       currentSnack-> next = snacks; 
@@ -91,8 +91,6 @@ int main() {
   char snackName[32];
   float snackCost;
   int snackQuantity;
-
- 
  
     printf("enter a number of snacks: ");
     scanf("%d",&snacksNum);
@@ -111,8 +109,8 @@ int main() {
     }
    
     for(int a = 0; a<snacksNum; a++){
-    //for(current = head; current != NULL; current = current-> next)
-     // printf("%d) %s\tcost: $%0.2f\tquantity: %d\n",a, current->name, head->cost, head->quantity);
+    //what variable should I use to print? 
+      printf("%d) %s\tcost: $%0.2f\tquantity: %d\n",a, head->name,head->cost, head->quantity);
     }  
   
   //clear(*snack); 

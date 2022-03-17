@@ -1,14 +1,16 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include "read_ppm.h" 
 
 int main(int argc, char** argv) {
   // first read it in 
-   int w = 0; 
-  int h = 0; 
+  int* w = 0; 
+  int* h = 0; 
   int counter = 0; 
   
   struct ppm_pixel *testArr; 
-  testArr = read_ppm(*argv, &w, &h);
+  testArr = read_ppm(*argv, w, h);
   //then modify   
   for(int i = 0; i < 2*sizeof(testArr); i++){
     testArr[i].red = testArr[i].red << (rand() % 2); 
@@ -19,8 +21,9 @@ int main(int argc, char** argv) {
       
   }
   // then write
-  strcat(argv,"-glitch.ppm");  
-  write_ppm(*argv,testArr,&w,&h); 
+  strcat(*argv,"-glitch.ppm");  
+  printf("%s\n",*argv); 
+  write_ppm(*argv,testArr, *w, *h); 
 
 
   free(testArr); 

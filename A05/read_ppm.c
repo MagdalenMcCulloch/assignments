@@ -8,11 +8,8 @@
 // array of arrays
 struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
   
-  //int magicConstant; 
+ 
   char currentLine [1024];   
- // unsigned char r;
- // unsigned char g;
- //unsigned char b;
 
   //read in the file
   FILE* fp = fopen(filename, "rb");
@@ -32,6 +29,9 @@ struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
 
   fgets(currentLine, 1024, fp); 
   
+  //print the dimensions
+    printf("reading %s with width %ls and height %ls\n",*filename, w, h); 
+
   //now we can allocate memory for the array of RGB triplets 
   struct ppm_pixel *pixArr = NULL; 
   pixArr = (struct ppm_pixel*)malloc(sizeof(struct ppm_pixel)*((*w)*(*h))); 
@@ -46,7 +46,7 @@ struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
   fclose(fp); 
   //free(pixArr); 
   return pixArr;
-  return NULL;
+ // return NULL;
 }
 
 // TODO: Implement this function
@@ -58,12 +58,15 @@ extern void write_ppm(const char* filename, struct ppm_pixel* pxs, int w, int h)
   FILE* fp = fopen(filename, "wb");
   if (fp == NULL) {
     printf("The name of the file is not valid");  
+    return 0; 
   }
+  printf("Writing file %s\n",filename); 
   fprintf(fp,"P6\n %d %d\n 255",w,h); 
   fwrite(pxs,sizeof(struct ppm_pixel),(w*h),fp); 
 
 
   fclose(fp); 
+  
   
 
 }
