@@ -7,28 +7,30 @@ int main(int argc, char** argv) {
   //our variables
   int width = 0; 
   int height = 0; 
+  
   int r = 0;
   int b = 0;
   int g = 0; 
-  int maxChars = 0; 
+   
   char *phrase; 
   phrase = malloc(sizeof(char)*34);
   //char newName [1024]; 
   int phraseLen = 0; 
-
+   
+  int maxChars = 0;
   //the array
   struct ppm_pixel *pixelArr; 
-  pixelArr = read_ppm(argv[1], &width, &height); 
+  pixelArr = read_ppm(argv[1], &width, &height);  
   maxChars = (((width*height*3)/8)-1); 
 
-
   //print statements 
-  printf("Reading %s with width %i and height %i \n",argv[0],width,height);
+  printf("Reading %s with width %i and height %i \n",argv[1],width,height);
   printf("Max number of characters in the image: %i\n",maxChars); 
+  
   printf("Enter a phrase: ");
   scanf("%s",phrase); 
-  strcat(argv[0],"-encoded.ppm");
-  printf("Writing file %s",*argv);
+  strcat(argv[1],"-encoded.ppm");
+  printf("Writing file %s\n",argv[1]);
 
   if(phrase == NULL){
     return 0; 
@@ -99,13 +101,9 @@ int main(int argc, char** argv) {
       }
       
     }
-
-
   }
 
   write_ppm(argv[1],pixelArr,width,height); 
-
-
   free(phrase); 
   free(pixelArr);
   return 0;
