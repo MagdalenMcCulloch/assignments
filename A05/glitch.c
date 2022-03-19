@@ -5,27 +5,24 @@
 
 int main(int argc, char** argv) {
   // first read it in 
-  int* w = 0; 
-  int* h = 0; 
-  int counter = 0; 
+  int width = 0; 
+  int height = 0;  
   
   struct ppm_pixel *testArr; 
-  testArr = read_ppm(*argv, w, h);
+  testArr = read_ppm(argv[1], &width, &height);
+  //printf("%ls",w); 
+  //printf("%ls",h); 
+  
   //then modify   
-  for(int i = 0; i < 2*sizeof(testArr); i++){
+  for(int i = 0; i < (width*height); i++){
     testArr[i].red = testArr[i].red << (rand() % 2); 
-    testArr[i].red++; 
     testArr[i].green = testArr[i].green << (rand() % 2); 
     testArr[i].blue = testArr[i].blue << (rand() % 2); 
-    
-      
   }
   // then write
-  strcat(*argv,"-glitch.ppm");  
-  printf("%s\n",*argv); 
-  write_ppm(*argv,testArr, *w, *h); 
-
-
+  strcat(argv[1],"-glitch.ppm");  
+  printf("%s\n",argv[1]); 
+  write_ppm(argv[1],testArr, width, height); 
   free(testArr); 
   return 0;
 }
