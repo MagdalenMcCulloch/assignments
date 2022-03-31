@@ -2,10 +2,13 @@
 
 Where did your run your tests? A laptop, or goldengate?
 
+I ran my test on my laptop. 
+
 
 What are the performance specifications of the machine: number and speed of
 processors, size of RAM? (use `lscpu` and `free -m`)
 
+the base speed of the processors is 1.1 Ghz and the size of the RAM is 8 GB. 
 
 = Allocations
 

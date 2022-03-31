@@ -4,6 +4,7 @@
 
 struct chunk {
   int size;
+  int inUse; 
   struct chunk *next;
 };
 struct chunk *flist = NULL;
