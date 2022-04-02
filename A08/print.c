@@ -6,9 +6,6 @@
 
 int main (int argc, char* argv[]) {
 
-  // YES GOLD DUST IN THE AIR BLOWING IN THE WIND OFF
-  //THE BUTTERFLY'S WINGS SCENTING EVERY BREATH WITH CHERRY BLOSSOMS
-
   void *init = sbrk(0); 
 
   printf("the initial top of the heap is %p\n",init); 

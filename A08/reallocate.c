@@ -7,13 +7,13 @@
 int main (int argc, char* argv[]) {
   int tot = 0;  
   for (int i = 0; i < 11; i++){ 
-    int *memory = NULL;
-    memory = malloc(25*sizeof(int));
-    printf("%ls\n",memory); 
-    //tot += (int) memory;  
+    size_t size = 25*sizeof(int); 
+    tot += size; 
+    int *memory = NULL; 
+    memory = malloc(size); 
     free(memory);    
   }
-  printf("total bytes malloced %i",tot); 
+  printf("total bytes malloced %i\n",tot); 
  
   return 0 ;
 }

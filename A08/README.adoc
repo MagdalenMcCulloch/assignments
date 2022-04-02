@@ -8,17 +8,29 @@ I ran my test on my laptop.
 What are the performance specifications of the machine: number and speed of
 processors, size of RAM? (use `lscpu` and `free -m`)
 
-the base speed of the processors is 1.1 Ghz and the size of the RAM is 8 GB. 
+the base speed of the 4 processors is 1.1 Ghz and the size of the RAM is 8 GB. 
 
 = Allocations
 
 In `simple.c`, where does the increase in 1040 bytes come from?
 Why is the value 1040 bytes?
-
+The 1040 bytes comes from the amount on the heap currently. 
 
 How many bytes does `mylloc_list.c` allocate when the program ends? Explain why
 this amount makes sense.
-
+in total it allocated 1100 bytes. 1040 was for the amount on the heap and 
+the extra 60 bytes could be due to fragmentation 
 
 = Fragementation
 
+What is fragmentation? 
+Fragmentation occurs when programs repetitively request large chunks of contiguous memory 
+from the computer leading to small, fragmented sections that were previously used. As the 
+number of small, left over sections increases, the size of contiguous memory the computer
+can allocate decreases. 
+
+What is the difference between internal and external fragmentation?
+Interal fragmentation occurs because memory can only be provided in multiples of 4, 
+but the program requires an amount between 2 multiples. Extrenal fragmentation occurs 
+when the sections of freed memory between sections in use are too small to use, and
+therefore wasted. 
