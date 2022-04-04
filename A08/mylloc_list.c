@@ -42,12 +42,12 @@ void fragstats(void* buffers[], int len) {
   for(int i = 0; i < len; i++){
 
     //for the freed chunks 
-    if(buffers[i] == NULL){
+    if(flist == NULL){
       totNumF++; 
 
     }
     //for the unfreed chunks 
-    else if(buffers[i] != NULL){
+    else if(flist != NULL){
       totNumU++; 
     } 
     unused = flist-> size - flist->inUse; 
