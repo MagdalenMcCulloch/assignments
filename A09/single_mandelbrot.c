@@ -7,11 +7,13 @@
 #include "read_ppm.h"
 
 int main(int argc, char* argv[]) {
-  int size = 480;
+  int size = 2000;
+  
   float xmin = -2.0;
   float xmax = 0.47;
   float ymin = -1.12;
   float ymax = 1.12;
+ 
   int maxIterations = 1000;
  
   int opt;
@@ -40,7 +42,7 @@ int main(int argc, char* argv[]) {
   char name [1000]; 
   char timestamp [20]; 
   char sz [10]; 
-  strcpy(name, "mandelbrot2-"); 
+  strcpy(name, "mandelbrot-"); 
   
   time_t now = time(0);  
   strftime(timestamp,20, "%Y-%m-%d %H:%M:%S", localtime(&now)); 
@@ -50,30 +52,41 @@ int main(int argc, char* argv[]) {
   strcat(name,".ppm");
   printf("%s\n",name);
 
-  int xfrac = 0; 
-  int yfrac = 0;
+  float xfrac = 0; 
+  float yfrac = 0;
  
-  int x0 = 0; 
-  int y0 = 0; 
+  float x0 = 0; 
+  float y0 = 0; 
 
-  int x = 0; 
-  int y = 0;  
+  float x = 0; 
+  float y = 0;  
  
   int iter = 0; 
-  int xtemp = 0; 
+  float xtemp = 0; 
   int rVal = 0; 
   int gVal = 0; 
   int bVal = 0; 
   srand(time(0));
   gettimeofday(&tstart,NULL);
-  
-  for(int r = 0; r < size;r++){ // goes through each row
-    for(int c = 0; c < size;c++){ //goes through each col
+  // generate pallet
+  for(int col = 0; col < size;col++){ //goes through each col 
+    for(int row = 0; row < size;row++){ // goes through each row
+      float r = row;
+      float c = col; 
+      float mySize = size; 
+      xfrac = r / mySize; 
+      yfrac = c / mySize;
       
-      xfrac = r / size; 
-      yfrac = c / size; 
       x0 = xmin + xfrac * (xmax - xmin); 
       y0 = ymin + yfrac * (ymax -ymin); 
+      /* used for testing 
+      if((c > 400) && (r == 1)){
+           printf(" %f",r); 
+           printf(" %f",c);
+           printf(" %f",x0); 
+           printf(" %f\n",y0); 
+          } 
+         */ 
 
       x = 0; 
       y = 0; 
@@ -82,23 +95,25 @@ int main(int argc, char* argv[]) {
       while(iter < maxIterations && x*x + y*y < 2*2){
           xtemp = (x*x) - (y*y) + x0;
           y = (2*x*y) + y0;
-          x = xtemp;
-          printf("%i",iter);  
-          iter++; 
+          x = xtemp;  
+          iter++;
+          if((c == size-1) && (r == size-1)){
+             printf(" %d",iter); 
+          } 
       }
        
       if(iter < maxIterations){ //escaped 
         rVal = rand()%225; 
         gVal = rand()%225;
         bVal = rand()%225;
-        mandelbrot[iter].red = rVal; 
-        mandelbrot[iter].blue = gVal; 
-        mandelbrot[iter].green = bVal; 
+        mandelbrot[(row*size)+col].red = rVal; 
+        mandelbrot[(row*size)+col].blue = gVal; 
+        mandelbrot[(row*size)+col].green = bVal; 
       }
       else{
-        mandelbrot[iter].red = 0; 
-        mandelbrot[iter].blue = 0; 
-        mandelbrot[iter].green = 0; 
+        mandelbrot[(row*size)+col].red = 0; 
+        mandelbrot[(row*size)+col].blue = 0; 
+        mandelbrot[(row*size)+col].green = 0; 
       } 
     }  
   }
@@ -106,8 +121,6 @@ int main(int argc, char* argv[]) {
   mandelbrot[(size*size)].blue = 0; 
   mandelbrot[(size*size)].green = 0;
   
-  // generate pallet
- // srand(time(0));
 
   // compute image
   gettimeofday(&tend,NULL);
