@@ -7,7 +7,7 @@
 #include "read_ppm.h"
 
 int main(int argc, char* argv[]) {
-  int size = 2000;
+  int size = 480;
   
   float xmin = -2.0;
   float xmax = 0.47;
@@ -69,8 +69,8 @@ int main(int argc, char* argv[]) {
   srand(time(0));
   gettimeofday(&tstart,NULL);
   // generate pallet
-  for(int col = 0; col < size;col++){ //goes through each col 
-    for(int row = 0; row < size;row++){ // goes through each row
+  for(int row = 0; row < size;row++){ // goes through each row
+    for(int col = 0; col < size;col++){ //goes through each col 
       float r = row;
       float c = col; 
       float mySize = size; 
@@ -127,6 +127,5 @@ int main(int argc, char* argv[]) {
   write_ppm(name,mandelbrot,size,size); //why is write in the loops in the assignment description??
   timer = tend.tv_sec - tstart.tv_sec + (tend.tv_usec - tstart.tv_usec)/1.e6;
   printf("Computed mandelbrot set (480x480) in %g seconds\n",timer);  
-
-   
+  free(mandelbrot);    
 }
