@@ -11,7 +11,7 @@
 #include <string.h>
 
 int main(int argc, char* argv[]) {
-  int size = 2000;
+  int size = 480;
   float xmin = -2.0;
   float xmax = 0.47;
   float ymin = -1.12;
@@ -65,34 +65,36 @@ int main(int argc, char* argv[]) {
 
   pid_t pid; 
 
-  for(int i = 0; i < 4; i++){
-    pid = fork(); 
-     
-  
+  for(int i = 0; i < 4; i++){  
     if(i == 0){ 
       cstart = 0; 
       cend = size/2;
       rstart = 0; 
-      rend = size/2; 
+      rend = size/2;
+      pid = fork(); 
     }
     else if(i == 1){
       cstart = size/2; 
       cend = size;
       rstart = 0; 
       rend = size/2;
+      pid = fork();
     }
     else if(i == 2){ 
       cstart = 0; 
       cend = size/2;
       rstart = size/2; 
-      rend = size; 
+      rend = size;
+      pid = fork();
     }
     else if(i == 3){
       cstart = size/2; 
       cend = size;
       rstart = size/2; 
       rend = size;
-    } 
+      pid = fork();
+    }  
+  }
     printf("Launched child process: %i\n",pid);
     printf("sub image block: col (%i,%i) to rows (%i,%i)\n",cstart,cend,rstart,rend); 
 
@@ -159,16 +161,17 @@ int main(int argc, char* argv[]) {
       } 
     }  
   }
-  }
   mandelbrot[(size*size)].red = 0; 
   mandelbrot[(size*size)].blue = 0; 
   mandelbrot[(size*size)].green = 0;  
+
+  pid = wait(NULL); 
 
   // compute image
   gettimeofday(&tend,NULL);
   write_ppm(name,mandelbrot,size,size); //why is write in the loops in the assignment description??
   timer = tend.tv_sec - tstart.tv_sec + (tend.tv_usec - tstart.tv_usec)/1.e6;
-   printf("Launched child complete: %i\n",pid);
+  printf("Launched child complete: %i\n",pid);
   printf("Computed mandelbrot set (480x480) in %g seconds\n",timer);  
   free(mandelbrot); 
 }
