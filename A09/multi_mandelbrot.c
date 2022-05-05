@@ -9,7 +9,6 @@
 #include <sys/ipc.h>
 #include "read_ppm.h"
 #include <string.h>
-
 #define BUF_SIZE 1024
 #define SHM_KEY 0x1234
 

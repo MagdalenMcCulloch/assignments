@@ -43,7 +43,6 @@ int main(int argc, char* argv[]) {
   char timestamp [20]; 
   char sz [10]; 
   strcpy(name, "mandelbrot-"); 
-  
   time_t now = time(0);  
   strftime(timestamp,20, "%Y-%m-%d %H:%M:%S", localtime(&now)); 
   sprintf(sz,"%d",size); 
