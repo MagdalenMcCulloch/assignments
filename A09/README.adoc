@@ -30,7 +30,7 @@ the amount of time it takes to compute each image.
 | Size | Time (s) 
 | 100 | 0.12
 | 400 | 0.86   
-| 800 | 3.1
-| 1000 | 5.2
-| 2000 | 21.8
+| 800 | 1.6
+| 1000 | 1.5
+| 2000 | 1.7
 !===
