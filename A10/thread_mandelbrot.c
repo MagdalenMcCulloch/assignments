@@ -8,8 +8,6 @@
 #include <string.h>
 #include "read_ppm.h"
 
-pthread_mutex_t mutex; 
-
 struct thread_data{
   long id; 
   int size;
@@ -39,6 +37,10 @@ struct thread_data{
 
 void* routine(void* args){
   // generate pallet
+  int colorValRed = rand()%225;
+  int colorValBlue = rand()%225;
+  int colorValGreen = rand()%225;
+  //mandelbrot math
   struct thread_data *data = (struct thread_data *)args; 
   int rcstart = data->cstart; 
   int rcend = data-> cend;
@@ -86,27 +88,22 @@ void* routine(void* args){
           rx = rxtemp;  
           riter++; 
       }
-      pthread_mutex_lock(&mutex);
       if(riter < rmaxIterations){ //escaped 
-        rrVal = rand()%225; 
-        rgVal = rand()%225;
-        rbVal = rand()%225;
-        rMandelbrot[(row*rsize)+col].red = rrVal; 
-        rMandelbrot[(row*rsize)+col].blue = rgVal; 
-        rMandelbrot[(row*rsize)+col].green = rbVal; 
+        rMandelbrot[(col*rsize)+row].red = colorValRed + riter; 
+        rMandelbrot[(col*rsize)+row].blue = colorValBlue + riter; 
+        rMandelbrot[(col*rsize)+row].green = colorValGreen + riter; 
       }
       else{
-        rMandelbrot[(row*rsize)+col].red = 0; 
-        rMandelbrot[(row*rsize)+col].blue = 0; 
-        rMandelbrot[(row*rsize)+col].green = 0; 
-      }
-      pthread_mutex_unlock(&mutex);  
+        rMandelbrot[(col*rsize)+row].red = 0; 
+        rMandelbrot[(col*rsize)+row].blue = 0; 
+        rMandelbrot[(col*rsize)+row].green = 0; 
+      } 
     }  
   }
-  free(data); 
-  rMandelbrot[(rsize*rsize)].red = 0; 
-  rMandelbrot[(rsize*rsize)].blue = 0; 
-  rMandelbrot[(rsize*rsize)].green = 0;  
+  rMandelbrot[(rsize*rsize-1)].red = 0; 
+  rMandelbrot[(rsize*rsize-1)].blue = 0; 
+  rMandelbrot[(rsize*rsize-1)].green = 0; 
+  return (void*) rMandelbrot;  
 }
 
 int main(int argc, char* argv[]) {
@@ -117,7 +114,6 @@ int main(int argc, char* argv[]) {
   float ymax = 1.12;
   int maxIterations = 1000;
   int numProcesses = 4;
-
   int opt;
   while ((opt = getopt(argc, argv, ":s:l:r:t:b:p:")) != -1) {
     switch (opt) {
@@ -160,9 +156,7 @@ int main(int argc, char* argv[]) {
   
   pthread_t threads[4]; 
   struct thread_data mdata[4]; 
-  pthread_mutex_init(&mutex,NULL); 
   for(int i = 0; i < 4; i++){
-    pthread_create(&threads[i], NULL,routine, &mdata[i]);
     mdata[i].id = i; 
     mdata[i].size = size; 
     mdata[i].xmin = xmin;
@@ -211,21 +205,18 @@ int main(int argc, char* argv[]) {
       mdata[i].rend = size; 
       printf("Thread %i) sub image block: cols (%i, %i) to rows (%i,%i)\n",i,(size/2),size,(size/2),size); 
     }
-  
+    pthread_create(&threads[i], NULL,routine, &mdata[i]);
   }
  
   for(int i = 0; i < 4; i++){
     pthread_join(threads[i], NULL); 
-    printf("Thread %i) finished",i); 
+    printf("Thread %i) finished\n",i); 
   }
-  pthread_mutex_destroy(&mutex); 
   // generate pallet
    // compute image
   gettimeofday(&tend,NULL);
   write_ppm(name,mandelbrot,size,size); //why is write in the loops in the assignment description??
   timer = tend.tv_sec - tstart.tv_sec + (tend.tv_usec - tstart.tv_usec)/1.e6;
-  //printf("Launched child complete: %i\n",pid);
   printf("Computed threaded mandelbrot set (480x480) in %g seconds\n",timer);  
   free(mandelbrot); 
- 
 }

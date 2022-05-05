@@ -4,7 +4,170 @@
 #include <assert.h>
 #include <time.h>
 #include <pthread.h>
+#include <sys/time.h>
+#include <string.h>
 #include "read_ppm.h"
+#include <math.h> 
+
+pthread_mutex_t mutex; 
+pthread_barrier_t barrier; 
+
+struct thread_data{
+  long id; 
+  int size;
+  float xmin; 
+  float xmax;
+  float ymin;
+  float ymax;
+  int maxIterations;
+  float xfrac; 
+  float yfrac;
+  float x0; 
+  float y0; 
+  float x; 
+  float y;  
+  int iter; 
+  float xtemp; 
+  int rVal; 
+  int gVal; 
+  int bVal; 
+  int cstart;
+  int cend;
+  int rstart; 
+  int rend;
+  struct ppm_pixel* threadMandelbrot; 
+}; 
+
+void* routine(void* args){
+  // generate pallet
+  int colorValRed = rand()%225;
+  int colorValBlue = rand()%225;
+  int colorValGreen = rand()%225;
+  struct thread_data *data = (struct thread_data *)args; 
+  int rcstart = data->cstart; 
+  int rcend = data-> cend;
+  int rrstart = data-> rstart; 
+  int rrend = data-> rend;
+  int rsize = data->size;
+  float rxmin = -2.0; 
+  float rxmax = 0.47;
+  float rymin = -1.12;
+  float rymax = 1.12;
+  int rmaxIterations = 1000;
+  float rxfrac = data-> xfrac; 
+  float ryfrac = data-> yfrac;
+ 
+  float rx0 = data-> x0; 
+  float ry0 = data-> y0; 
+
+  float rx = data-> x; 
+  float ry = data-> y;  
+ 
+  int riter = data->iter; 
+  float rxtemp = data->xtemp; 
+  int *membership; 
+  membership = malloc(sizeof(int)*rsize*rsize);  
+  int maxCount = 0; 
+  int *placeCount; 
+  placeCount = malloc(sizeof(int)*rsize*rsize);
+  struct ppm_pixel *rMandelbrot = data->threadMandelbrot; 
+    for(int row = rrstart; row < rrend;row++){ // goes through each row
+    for(int col = rcstart; col < rcend;col++){ //goes through each col  
+      float r = row;
+      float c = col; 
+      float mySize = rsize; 
+      rxfrac = r / mySize; 
+      ryfrac = c / mySize;
+      
+      rx0 = rxmin + rxfrac * (rxmax - rxmin); 
+      ry0 = rymin + ryfrac * (rymax - rymin); 
+
+      rx = 0; 
+      ry = 0; 
+      riter = 0;
+       
+      while(riter < rmaxIterations && rx*rx + ry*ry < 2*2){
+          rxtemp = (rx*rx) - (ry*ry) + rx0;
+          ry = (2*rx*ry) + ry0;
+          rx = rxtemp;  
+          riter++; 
+      }
+      if(riter < rmaxIterations){ //escaped 
+        rMandelbrot[(col*rsize)+row].red = colorValRed + riter; 
+        rMandelbrot[(col*rsize)+row].blue = colorValBlue + riter; 
+        rMandelbrot[(col*rsize)+row].green = colorValGreen + riter; 
+        membership[row*col] = 0; 
+      }
+      else{
+        rMandelbrot[(col*rsize)+row].red = 0; 
+        rMandelbrot[(col*rsize)+row].blue = 0; 
+        rMandelbrot[(col*rsize)+row].green = 0;
+        membership[row*col] = 1;  
+      } 
+    }  
+  }
+  rMandelbrot[(rsize*rsize-1)].red = 0; 
+  rMandelbrot[(rsize*rsize-1)].blue = 0; 
+  rMandelbrot[(rsize*rsize-1)].green = 0; 
+//step 2 
+for(int row = rrstart; row < rrend;row++){ // goes through each row
+  for(int col = rcstart; col < rcend;col++){ //goes through each col 
+    if(membership[row*col] == 1){
+      continue;
+    }
+    float r = row;
+    float c = col; 
+     float mySize = rsize; 
+    rxfrac = r / mySize; 
+    ryfrac = c / mySize;
+      
+    rx0 = rxmin + rxfrac * (rxmax - rxmin); 
+    ry0 = rymin + ryfrac * (rymax - rymin); 
+
+    rx = 0; 
+    ry = 0; 
+
+    while(rx*rx + ry*ry < 2*2){
+      int xtemp = rx*rx - ry*ry + rx0; 
+      ry = 2*rx*ry + ry0; 
+      rx = xtemp; 
+      int yrow = round(mySize*(ry-rymin)/(rymax-rymin));
+      int xcol = round(mySize*(rx-rxmin)/(rxmax-rxmin)); 
+      if(yrow<0 || yrow >= rsize){
+        continue; 
+      }
+      if(xcol<0 || xcol >= rsize){
+        continue;
+      }
+      pthread_mutex_lock(&mutex);
+      placeCount[yrow*xcol]++; 
+      maxCount++; 
+      pthread_mutex_unlock(&mutex);
+    }
+  }
+}
+ printf("waiting at the barrier!\n");
+ pthread_barrier_wait(&barrier); 
+//step 3
+  int gamma = 0.681; 
+  float factor = 1.0/gamma; 
+  for(int row = rrstart; row < rrend;row++){ // goes through each row
+    for(int col = rcstart; col < rcend;col++){ //goes through each col 
+      int value = 0; 
+      if(placeCount[row*col] > 0){
+        value = log(placeCount[row*col] /maxCount); 
+        value = pow(value, factor);
+      }
+      //make the pallet but start that w assignment 9
+        rMandelbrot[(row*rsize)+col].red = 20; 
+        rMandelbrot[(row*rsize)+col].blue = 20; 
+        rMandelbrot[(row*rsize)+col].green = 20;
+    }
+  } 
+  free(membership); 
+  free(placeCount); 
+  return (void*) rMandelbrot; 
+}
 
 int main(int argc, char* argv[]) {
   int size = 480;
@@ -14,7 +177,6 @@ int main(int argc, char* argv[]) {
   float ymax = 1.12;
   int maxIterations = 1000;
   int numProcesses = 4;
-
   int opt;
   while ((opt = getopt(argc, argv, ":s:l:r:t:b:p:")) != -1) {
     switch (opt) {
@@ -27,11 +189,101 @@ int main(int argc, char* argv[]) {
         "-b <ymin> -t <ymax> -p <numProcesses>\n", argv[0]); break;
     }
   }
-  printf("Generating mandelbrot with size %dx%d\n", size, size);
+  printf("Generating threaded mandelbrot with size %dx%d\n", size, size);
+  
   printf("  Num processes = %d\n", numProcesses);
   printf("  X range = [%.4f,%.4f]\n", xmin, xmax);
   printf("  Y range = [%.4f,%.4f]\n", ymin, ymax);
-
+  
   // todo: your code here
-  // compute image
+    //#1 calculate and output the number of seconds needed to generate the image
+  struct timeval tstart, tend; 
+  double timer;
+  
+  struct ppm_pixel *mandelbrot; 
+  mandelbrot = malloc(sizeof(struct ppm_pixel)*size*size); 
+  char name [1000]; 
+  char timestamp [20]; 
+  char sz [10]; 
+  strcpy(name, "thread-buddhabrot-");  
+  time_t now = time(0);  
+  strftime(timestamp,20, "%Y-%m-%d %H:%M:%S", localtime(&now)); 
+  sprintf(sz,"%d",size); 
+  strcat(name,sz); 
+  strcat(name,timestamp);  
+  strcat(name,".ppm");
+  printf("%s\n",name);
+
+  srand(time(0));
+  gettimeofday(&tstart,NULL);
+  
+  pthread_t threads[4]; 
+  struct thread_data mdata[4]; 
+  pthread_mutex_init(&mutex, NULL); 
+  pthread_barrier_init(&barrier,NULL,4); 
+  for(int i = 0; i < 4; i++){
+    mdata[i].id = i; 
+    mdata[i].size = size; 
+    mdata[i].xmin = xmin;
+    mdata[i].xmax = xmax;
+    mdata[i].ymin = ymin;
+    mdata[i].ymax = ymax; 
+    mdata[i].maxIterations = maxIterations; 
+    mdata[i].xfrac = 0; 
+    mdata[i].yfrac = 0; 
+    mdata[i].x0 = 0; 
+    mdata[i].y0 = 0; 
+    mdata[i].x = 0;
+    mdata[i].y = 0;
+    mdata[i].iter = 0;
+    mdata[i].xtemp = 0;
+    mdata[i].rVal = 0;
+    mdata[i].gVal = 0;
+    mdata[i].bVal = 0;
+    mdata[i].threadMandelbrot = mandelbrot; 
+
+    if(i ==0){
+      mdata[i].cstart = 0; 
+      mdata[i].cend = size/2; 
+      mdata[i].rstart = 0; 
+      mdata[i].rend = size/2;
+      printf("Thread %i) sub image block: cols (0, %i) to rows (0,%i)\n",i,(size/2),(size/2)); 
+    }
+    else if(i == 1){
+      mdata[i].cstart = size/2;
+      mdata[i].cend = size;
+      mdata[i].rstart = 0;
+      mdata[i].rend = size/2;
+      printf("Thread %i) sub image block: cols (%i, %i) to rows (0,%i)\n",i,(size/2),size,(size/2)); 
+    }
+    else if(i ==2){
+      mdata[i].cstart = 0; 
+      mdata[i].cend = size/2;
+      mdata[i].rstart = size/2;
+      mdata[i].rend = size;
+      printf("Thread %i) sub image block: cols (0, %i) to rows (%i,%i)\n",i,(size/2),(size/2),size); 
+    }
+    else if(i ==3){
+      mdata[i].cstart = size/2;
+      mdata[i].cend = size; 
+      mdata[i].rstart = size/2;
+      mdata[i].rend = size; 
+      printf("Thread %i) sub image block: cols (%i, %i) to rows (%i,%i)\n",i,(size/2),size,(size/2),size); 
+    }
+    pthread_create(&threads[i], NULL,routine, &mdata[i]);
+  }
+ 
+  for(int i = 0; i < 4; i++){
+    pthread_join(threads[i], NULL); 
+    printf("Thread %i) finished\n",i); 
+  }
+  pthread_mutex_destroy(&mutex); 
+  pthread_barrier_destroy(&barrier); 
+  // generate pallet
+   // compute image
+  gettimeofday(&tend,NULL);
+  write_ppm(name,mandelbrot,size,size); //why is write in the loops in the assignment description??
+  timer = tend.tv_sec - tstart.tv_sec + (tend.tv_usec - tstart.tv_usec)/1.e6;
+  printf("Computed threaded mandelbrot set (480x480) in %g seconds\n",timer);  
+  free(mandelbrot); 
 }
