@@ -68,7 +68,11 @@ int main(int argc, char* argv[]) {
   int bVal = 0; 
   srand(time(0));
   gettimeofday(&tstart,NULL);
-  // generate pallet
+    // generate pallet
+  int colorValRed = rand()%225;
+  int colorValBlue = rand()%225;
+  int colorValGreen = rand()%225;
+  //mandelbrot math
   for(int row = 0; row < size;row++){ // goes through each row
     for(int col = 0; col < size;col++){ //goes through each col 
       float r = row;
@@ -102,24 +106,22 @@ int main(int argc, char* argv[]) {
           } 
       }
        
-      if(iter < maxIterations){ //escaped 
-        rVal = rand()%225; 
-        gVal = rand()%225;
-        bVal = rand()%225;
-        mandelbrot[(row*size)+col].red = rVal; 
-        mandelbrot[(row*size)+col].blue = gVal; 
-        mandelbrot[(row*size)+col].green = bVal; 
+      if(iter < maxIterations){ //escaped  
+        mandelbrot[(col*size)+row].red = colorValRed + iter ; 
+        mandelbrot[(col*size)+row].blue = colorValBlue +iter; 
+        mandelbrot[(col*size)+row].green = colorValGreen + iter; 
       }
-      else{
-        mandelbrot[(row*size)+col].red = 0; 
-        mandelbrot[(row*size)+col].blue = 0; 
-        mandelbrot[(row*size)+col].green = 0; 
+      else{ 
+        mandelbrot[(col*size)+row].red = 0; 
+        mandelbrot[(col*size)+row].blue = 0; 
+        mandelbrot[(col*size)+row].green = 0;
       } 
     }  
   }
-  mandelbrot[(size*size)].red = 0; 
-  mandelbrot[(size*size)].blue = 0; 
-  mandelbrot[(size*size)].green = 0;
+  mandelbrot[(size*size-1)].red = 0; 
+  mandelbrot[(size*size-1)].blue = 0; 
+  mandelbrot[(size*size-1)].green = 0;
+  
   
 
   // compute image
@@ -127,5 +129,5 @@ int main(int argc, char* argv[]) {
   write_ppm(name,mandelbrot,size,size); //why is write in the loops in the assignment description??
   timer = tend.tv_sec - tstart.tv_sec + (tend.tv_usec - tstart.tv_usec)/1.e6;
   printf("Computed mandelbrot set (480x480) in %g seconds\n",timer);  
-  free(mandelbrot);    
+  free(mandelbrot);     
 }
